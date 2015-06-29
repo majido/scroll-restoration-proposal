@@ -87,15 +87,15 @@ Run the following steps immediately:
 ### Web IDL
 
 <pre class="idl">
-
 partial interface History {
     readonly attribute StateOptions options;
 
     void pushState(any data, DOMString? title, optional DOMString? url = null, optional StateOptions options);
     void replaceState(any data, DOMString? title, optional DOMString? url = null, optional StateOptions options);
 
-}
-enum ScrollRestoration {"auto", "manual"};
+};
+
+enum ScrollRestoration { "auto", "manual" };
 
 dictionary StateOptions {
     ScrollRestoration scrollRestoration = "auto";
