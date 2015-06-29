@@ -1,12 +1,8 @@
 ---
 title: Custom Scroll Restoration Proposal
-pygments: true
+layout: markdown
 ---
 
-<head>
-  <link rel="stylesheet" href="github-markdown.css">
-</head>
-<body class="markdown-body">
 
 Custom Scroll Restoration Proposal
 ==================================
@@ -50,7 +46,7 @@ unintended incorrect position due to clamping.
 the page is entered e.g., via history navigation or vanilla links clicks.
 
 3. They may want to control the details of visual transition between UI states
-for example using a specific scrolling animation to transition instead of an@WW
+for example using a specific scrolling animation to transition instead of an
 instant jump, or even restoring scroll position of inner scrollers.
 
 There several hacks used in practice which suffer from serious issues and force
