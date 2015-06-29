@@ -1,3 +1,7 @@
+---
+title: Custom Scroll Restoration Proposal - Event-based API
+---
+
 Custom Scroll Restoration - Event-based API
 ===============================================
 
