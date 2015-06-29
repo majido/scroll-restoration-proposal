@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+
+<html xmlns='http://www.w3.org/1999/xhtml' lang='en'>
+  <head>
+    <meta charset='utf-8'/>
+    <title>Custom Scroll Restoration - History-based API
+</title>
+    <script class='remove'>
+      var respecConfig = {
+          specStatus: "unofficial"
+      ,   shortName:  ""
+      ,   editors: [
+                {   name:       "Majid Valipour"
+                ,   company:    "Google"
+                ,   companyURL: "http://google.com/" }
+          ]
+      ,   edDraftURI:   "https://github.com/majido/scroll-restoration-proposal"
+      ,   copyrightStart: 2015
+      ,   noIDLIn:      true
+      ,   wg:           ""
+      ,   wgURI:        ""
+      ,   wgPublicList: "whatwg"
+      ,   wgPatentURI:  "XXX"
+      ,   isRecTrack:   false
+      ,   isNoTrack:    true
+      ,   issueBase:    ""
+      ,   format: 'markdown'
+      };
+    </script>
+    <script src='http://www.w3.org/Tools/respec/respec-w3c-common' class='remove' async></script>
+ </head>
+  <body>
+    <section id='abstract'>
+        This document describes an API that gives web authors additional control over
+        user agent's restoration of persisted user state in particular the scroll
+        position and page scale.
+    </section>
+    
+    <section id='sotd'>
+      We actively solicit comments on this document either via emailing to [whatwg@whatwg.org mailing list](https://lists.w3.org/Archives/Public/public-whatwg-archive/) or opening an issue on [GitHub](https://github.com/majido/scroll-restoration-proposal) for this repository.
+    </section>
+
+## Design
+
+We propose to modify History API and make it possible for web authors to
+explicitly disable the default scroll restoration behavior. The following changes
+are suggested:
+
+* Add a fourth optional parameter (i.e. `options`) to both `history.pushState`, and
+`history.replaceState` with backward compatible values as default.
+
+* Add a new attribute to `window.history` (i.e. `history.options`) that exposes the current
+effective value of this new property. This attribute can be used as a simple feature
+detection mechanism.
+
+### Child Frames
+
+Disabling scroll restoration in one frame should not impact the
+scroll restoration for any other frame including any of its child frames. 
+
+
+## Spec Changes
+
+Replace step #9 in [history traversal algorithm][spec] with the following:
+
+9\. If the specified entry has persisted user state, and the user agent wants
+to update aspects of the document and its rendering it should run the
+`persisted user state restoration` steps.
+
+Add the following new section to the spec that defines user state restoration.
+
+### Persisted user state restoration
+
+Run the following steps immediately:
+
+  1. If the entry has an options dictionary, let *options* be that.
+
+  2. Set history.options to *options*
+
+  3. If options.scrollRestoration is 'manual' the user agent should not
+  restore the scroll position for the document otherwise it may.
+  
+  4. User agent may now update other aspects of the document and its
+  rendering, for instance values of form fields, that it had previously
+  recorded.
+
+### Web IDL
+
+<pre class="idl">
+
+partial interface History {
+    readonly attribute StateOptions options;
+
+    void pushState(any data, DOMString? title, optional DOMString? url = null, optional StateOptions options);
+    void replaceState(any data, DOMString? title, optional DOMString? url = null, optional StateOptions options);
+
+}
+enum ScrollRestoration {"auto", "manual"};
+
+dictionary StateOptions {
+    ScrollRestoration scrollRestoration = "auto";
+};
+</pre>
+
+Notes:
+
+* The `StateOptions` is defined as a dictionary to make it easier to add
+  additional control knobs in future. For example it is possible to give
+  developers control over restoration of scale, or form data by adding new
+  properties to `StateOptions`.
+
+## Usage
+
+Web applications that are interested in implementing their own application
+specific scroll restoration logic can disable user-agent's scroll restoration by
+passing the option argument when creating their new history entry or by
+updating the current active history entry.
+
+  <pre class='highlight example'>
+
+    history.pushState('', '', '/page.html', {scrollRestoration: 'manual'})
+
+    // OR
+
+    history.replaceState(history.state, null, null , {scrollRestoration: 'manual'})
+ </pre>
+
+Checking for existence of the history.options can be used as a way to feature detect:
+
+  <pre class='highlight example'>
+    let canControlScrollRestoration = 'options' in window.history && 'scrollRestoration' in window.history.options
+  </pre>
+
+
+[background]: https://docs.google.com/document/d/1Tiu8PjvBtNOAgeh6yrs7bOrXxQcavQLiNtRJ_ToLlVM/edit
+[spec]: https://html.spec.whatwg.org/multipage/browsers.html#history-traversal
+
+</body>
+</html>
