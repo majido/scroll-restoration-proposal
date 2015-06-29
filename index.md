@@ -1,7 +1,12 @@
 ---
 title: Custom Scroll Restoration Proposal
+pygments: true
 ---
 
+<head>
+  <link rel="stylesheet" href="github-markdown.css">
+</head>
+<body class="markdown-body">
 
 Custom Scroll Restoration Proposal
 ==================================
@@ -15,7 +20,7 @@ There are two slightly different proposed API that can achieve this:
    which is currently implemented in chromium behind [experimental feature
    flag][chromeflag]. ([whatwg discussion][whatwg])
 
-- [~~Event based API~~](event-based-api.md): This proposal suffers from serious
+- [~~Event based API~~](event-based-api.html): This proposal suffers from serious
   problem described in [issue 3](https://github.com/majido/scroll-
   restoration-proposal/issues/3).
 
@@ -97,3 +102,5 @@ see [here][background].
 
 [position-tracking-bug]: https://code.google.com/p/chromium/issues/detail?id=474579
 [chromeflag]: chrome://flags/#enable-experimental-web-platform-features
+
+</body>

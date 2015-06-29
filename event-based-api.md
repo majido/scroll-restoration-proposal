@@ -1,5 +1,6 @@
 ---
 title: Custom Scroll Restoration Proposal - Event-based API
+pygments: true
 ---
 
 Custom Scroll Restoration - Event-based API
