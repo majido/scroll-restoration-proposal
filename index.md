@@ -1,5 +1,10 @@
-Custom Scroll Restoration
-==============================
+---
+title: Custom Scroll Restoration Proposal
+---
+
+
+Custom Scroll Restoration Proposal
+==================================
 
 Proposal to gives web authors additional control over user agent's restoration
 of persisted use state in particular the scroll position and page scale.
