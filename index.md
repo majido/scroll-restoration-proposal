@@ -98,5 +98,3 @@ see [here][background].
 
 [position-tracking-bug]: https://code.google.com/p/chromium/issues/detail?id=474579
 [chromeflag]: chrome://flags/#enable-experimental-web-platform-features
-
-</body>
