@@ -1,3 +1,4 @@
+# Custom Scroll Restoration
 This repository hosts a [proposed spec][spec] for custom scroll restoration which aims to
 make it possible for web authors to disable the automatic scroll restoration in their
 web apps.
@@ -6,7 +7,7 @@ web apps.
 
 * [Chromium Dashboard entry][dashboard] and [launch bug][crbug]
 * [Background of the problem][background]
-* Whatwg mailing list [dicsussions][[whtwg-dicsussion]
+* Whatwg mailing list [dicsussions][whtwg-dicsussion]
 
 [spec]: http://majido.github.io/scroll-restoration-proposal/history-based-api.html
 [dashboard]: https://www.chromestatus.com/features/5657284784947200
