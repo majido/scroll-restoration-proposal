@@ -91,12 +91,12 @@ scroll restoration for any other frame including any of its child frames.
 
 enum ScrollRestoration { "auto", "manual" };
 
-dictionary StateOptions {
-  ScrollRestoration scrollRestoration = "auto";
+interface StateOptions {
+  attribute ScrollRestoration scrollRestoration;
 };
 
 partial interface History {
-  attribute StateOptions options = {};
+  readonly attribute StateOptions options;
 };
 
 </pre>
@@ -104,22 +104,17 @@ partial interface History {
 <dl>
   <dt><dfn>scrollRestoration</dfn></dt>
   <dd>          
-
   Indicates whether the user agent should restore scroll position when
-  traversing to this entry.
-  
+  traversing to this entry. Anytime this attribute is modified the current
+  entry in joint session history should be updated to reflect the change.
   </dd>
 </dl>
 
-Anytime `history.options` is modified the current entry in Document's session
-history should be updated to reflect the change.
 
-<p class="note">
-The `StateOptions` is defined as a dictionary to make it easier to add
-additional control knobs in future. For example it is possible to give
-developers control over restoration of scale, or form data by adding new
-properties to `StateOptions`.
-</p>
+<p class="note"> The `StateOptions` is defined as a interface to make it
+easier to add additional restoration related control knobs in future. For
+example it is possible to give developers control over restoration of scale,
+or form data by adding new attributes to `StateOptions`. </p>
 
 <section class="informative">
 ## Usage
@@ -131,7 +126,7 @@ entry is added to history session with unexpected scroll restoration option.
 
   <pre class='highlight example'>
   window.onload = function() {
-    history.options.scrollRestoration = 'manual';
+       history.options.scrollRestoration = 'manual';
   }
   </pre>
 
@@ -145,13 +140,11 @@ Checking for existence of the history.options can be used as a way to feature de
 
 ## Spec Changes
 
-
 ### History traversal
 
 Modify the [history traversal algorithm][history-traverse-algorithm], add the
 following new section to the spec defining persisted user state restoration
-process and update steps 3  and 9 as following:
-
+process and update steps 3 and 9 as following:
 
 9\. If the specified entry has persisted user state, and the user agent wants
 to update aspects of the document and its rendering **it should run the
@@ -162,25 +155,24 @@ to update aspects of the document and its rendering **it should run the
 
 Run the following steps immediately:
 
-  1. If the entry has an options value, let *options* be that.
+  1. If the entry has an scroll restoration value, let *scrollRestoration* be that.
 
-  2. If *options.scrollRestoration* is 'manual' the user agent should not
+  2. If *scrollRestoration* is 'manual' the user agent should not
   restore the scroll position for the document otherwise it may.
   
   3. User agent may now update other aspects of the document and its
   rendering, for instance values of form fields, that it had previously
   recorded.
 
-  5. Set `history.options` to *option*
+  5. Set `history.options.scrollRestoration` to *scrollRestoration*
 
 ### Push State
 
 Modify the [pushState algorithm][pushstate-algorithm] and update a step 4.3 as following:
 
   (4\.)3\. If appropriate, update the current entry to reflect any state that
-  (the user agent wishes to persist, **and current history state restoration options
-  (`history.options`)**. The entry is then said to be an entry with
-  (persisted user state.
+  the user agent wishes to persist, **and current history scroll restoration
+  value**. The entry is then said to be an entry with persisted user state.
 
 ### Navigating to Fragment
 
@@ -188,10 +180,9 @@ Modify the [navigating to a fragment identifier algorithm][scroll-to-frag-
 algorithm] and update step 3 as following:
 
   3\. Append a new entry at the end of the History object representing the new
-  resource and its Document object, related state, **and current history state
-  restoration options (`history.options`)**. Its URL must be set to the
-  address to which the user agent was navigating. The title must be left
-  unset.
+  resource and its Document object, related state, **and  current history
+  scroll restoration value**. Its URL must be set to the address to which the
+  user agent was navigating. The title must be left unset.
 
 ### Navigating to a new page
 
@@ -200,7 +191,7 @@ algorithm] algorithm  and update step 2.2 as following:
 
   (2\.)2\. Append a new entry at the end of the History object representing
 the new resource and its Document object and related state **and with default
-history state restoration options (i.e., `scrollRestoation` = "auto")**.
+history scroll restoration value (i.e. "auto")**.
 
 
 
