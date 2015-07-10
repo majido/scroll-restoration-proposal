@@ -53,93 +53,87 @@
     </section>
     
     <section id='sotd'>
-      We actively solicit comments on this document either via emailing to [whatwg@whatwg.org mailing list](https://lists.w3.org/Archives/Public/public-whatwg-archive/) or opening an issue on [GitHub](https://github.com/majido/scroll-restoration-proposal) for this repository.
+
+      We actively solicit comments on this document either via emailing to
+      [whatwg@whatwg.org mailing list][whatwg-mailinglist] or opening an issue
+      on [GitHub][github-repo] for this repository.
+    
     </section>
 
 ## Design
 
 We propose to modify History API and make it possible for web authors to
-explicitly disable the default scroll restoration behavior. The following changes
-are suggested:
+explicitly disable the default scroll restoration behavior. This is achieved
+by adding a new attribute, `options.scrollRestoration`, to `window.history`.
+This new attribute can take two values: 'auto', 'manual' with 'auto' being the
+default.
 
-* Add a fourth optional parameter (i.e. `options`) to both `history.pushState`, and
-`history.replaceState` with backward compatible values as default.
+Setting `scrollRestoration` to a new value updates the [current entry
+][current-entry-def] in history session. Also any new entry for the current
+active Document that is added to history session will use this new
+`scrollRestoration` value. However, changing this value does not impact any
+previous entries in sessions history including those that belong to the same
+Document.
 
-* Add a new attribute to `window.history` (i.e. `history.options`) that exposes the current
-effective value of this new property. This attribute can be used as a simple feature
-detection mechanism.
+Note that by design, changes to `scrollRestoration` only affect entries that
+will be created for the same document (e.g., entries created using pushState,
+or due to fragment navigation), any other navigation where the document
+changes resets the `scrollRestoration` to its default value.
 
 ### Child Frames
 
 Disabling scroll restoration in one frame should not impact the
-scroll restoration for any other frame including any of its child frames. 
-
-
-## Spec Changes
-
-Replace step #9 in [history traversal algorithm][spec] with the following:
-
-9\. If the specified entry has persisted user state, and the user agent wants
-to update aspects of the document and its rendering it should run the
-`persisted user state restoration` steps.
-
-Add the following new section to the spec that defines user state restoration.
-
-### Persisted user state restoration
-
-Run the following steps immediately:
-
-  1. If the entry has an options dictionary, let *options* be that.
-
-  2. Set history.options to *options*
-
-  3. If options.scrollRestoration is 'manual' the user agent should not
-  restore the scroll position for the document otherwise it may.
-  
-  4. User agent may now update other aspects of the document and its
-  rendering, for instance values of form fields, that it had previously
-  recorded.
+scroll restoration for any other frame including any of its child frames.
 
 ### Web IDL
 
 <pre class="idl">
-partial interface History {
-    readonly attribute StateOptions options;
-
-    void pushState(any data, DOMString? title, optional DOMString? url = null, optional StateOptions options);
-    void replaceState(any data, DOMString? title, optional DOMString? url = null, optional StateOptions options);
-
-};
 
 enum ScrollRestoration { "auto", "manual" };
 
 dictionary StateOptions {
-    ScrollRestoration scrollRestoration = "auto";
+  ScrollRestoration scrollRestoration = "auto";
 };
+
+partial interface History {
+  attribute StateOptions options = {};
+};
+
 </pre>
 
-Notes:
+<dl>
+  <dt><dfn>scrollRestoration</dfn></dt>
+  <dd>          
 
-* The `StateOptions` is defined as a dictionary to make it easier to add
-  additional control knobs in future. For example it is possible to give
-  developers control over restoration of scale, or form data by adding new
-  properties to `StateOptions`.
+  Indicates whether the user agent should restore scroll position when
+  traversing to this entry.
+  
+  </dd>
+</dl>
 
+Anytime `history.options` is modified the current entry in Document's session
+history should be updated to reflect the change.
+
+<p class="note">
+The `StateOptions` is defined as a dictionary to make it easier to add
+additional control knobs in future. For example it is possible to give
+developers control over restoration of scale, or form data by adding new
+properties to `StateOptions`.
+</p>
+
+<section class="informative">
 ## Usage
 
-Web applications that are interested in implementing their own application
-specific scroll restoration logic can disable user-agent's scroll restoration by
-passing the option argument when creating their new history entry or by
-updating the current active history entry.
+Web applications that want to implement their own custom scroll restoration
+logic can disable user-agent's scroll restoration by setting the
+scrollRestoration value. It is best if this is done on load to ensure that no
+entry is added to history session with unexpected scroll restoration option.
 
   <pre class='highlight example'>
-
-    history.pushState('', '', '/page.html', {scrollRestoration: 'manual'})
-
-    // OR
-
-    history.replaceState(history.state, null, null , {scrollRestoration: 'manual'})
- </pre>
+  window.onload = function() {
+    history.options.scrollRestoration = 'manual';
+  }
+  </pre>
 
 Checking for existence of the history.options can be used as a way to feature detect:
 
@@ -147,9 +141,80 @@ Checking for existence of the history.options can be used as a way to feature de
     let canControlScrollRestoration = 'options' in window.history && 'scrollRestoration' in window.history.options
   </pre>
 
+</section>
 
+## Spec Changes
+
+
+### History traversal
+
+Modify the [history traversal algorithm][history-traverse-algorithm], add the
+following new section to the spec defining persisted user state restoration
+process and update steps 3  and 9 as following:
+
+
+9\. If the specified entry has persisted user state, and the user agent wants
+to update aspects of the document and its rendering **it should run the
+`persisted user state restoration` steps.**
+
+
+#### Persisted user state restoration
+
+Run the following steps immediately:
+
+  1. If the entry has an options value, let *options* be that.
+
+  2. If *options.scrollRestoration* is 'manual' the user agent should not
+  restore the scroll position for the document otherwise it may.
+  
+  3. User agent may now update other aspects of the document and its
+  rendering, for instance values of form fields, that it had previously
+  recorded.
+
+  5. Set `history.options` to *option*
+
+### Push State
+
+Modify the [pushState algorithm][pushstate-algorithm] and update a step 4.3 as following:
+
+  (4\.)3\. If appropriate, update the current entry to reflect any state that
+  (the user agent wishes to persist, **and current history state restoration options
+  (`history.options`)**. The entry is then said to be an entry with
+  (persisted user state.
+
+### Navigating to Fragment
+
+Modify the [navigating to a fragment identifier algorithm][scroll-to-frag-
+algorithm] and update step 3 as following:
+
+  3\. Append a new entry at the end of the History object representing the new
+  resource and its Document object, related state, **and current history state
+  restoration options (`history.options`)**. Its URL must be set to the
+  address to which the user agent was navigating. The title must be left
+  unset.
+
+### Navigating to a new page
+
+Modify the [update the session history with the new page][update-session-
+algorithm] algorithm  and update step 2.2 as following:
+
+  (2\.)2\. Append a new entry at the end of the History object representing
+the new resource and its Document object and related state **and with default
+history state restoration options (i.e., `scrollRestoation` = "auto")**.
+
+
+
+
+[whatwg-mailinglist]: https://lists.w3.org/Archives/Public/public-whatwg-archive/
+[github-repo]: https://github.com/majido/scroll-restoration-proposal
 [background]: https://docs.google.com/document/d/1Tiu8PjvBtNOAgeh6yrs7bOrXxQcavQLiNtRJ_ToLlVM/edit
-[spec]: https://html.spec.whatwg.org/multipage/browsers.html#history-traversal
+
+[history-traverse-algorithm]: https://html.spec.whatwg.org/#history-traversal
+[pushstate-algorithm]: https://html.spec.whatwg.org/#dom-history-pushstate
+[scroll-to-frag-algorithm]: https://html.spec.whatwg.org/#scroll-to-fragid
+[update-session-algorithm]: https://html.spec.whatwg.org/#update-the-session-history-with-the-new-page
+
+[current-entry-def]: https://html.spec.whatwg.org/#current-entry
 
 </body>
 </html>
