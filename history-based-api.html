@@ -69,16 +69,16 @@ This new attribute can take two values: 'auto', 'manual' with 'auto' being the
 default.
 
 Setting `scrollRestoration` to a new value updates the [current entry
-][current-entry-def] in history session. Also any new entry for the current
-active Document that is added to history session will use this new
-`scrollRestoration` value. However, changing this value does not impact any
-previous entries in sessions history including those that belong to the same
-Document.
+][current-entry-def] in history session. Also any future entry that is added
+to history session for the same document will use this new `scrollRestoration`
+value. However, changing this value does not impact any previous entries in
+sessions history including those that belong to the same document.
+Furthermore, any navigation to a new page with a different document resets the
+`scrollRestoration` to its default value.
 
-Note that by design, changes to `scrollRestoration` only affect entries that
+Note that this ensures that changes to `scrollRestoration` only affect entries that
 will be created for the same document (e.g., entries created using pushState,
-or due to fragment navigation), any other navigation where the document
-changes resets the `scrollRestoration` to its default value.
+or due to fragment navigation).
 
 ### Child Frames
 
