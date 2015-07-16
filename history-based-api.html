@@ -64,7 +64,7 @@
 
 We propose to modify History API and make it possible for web authors to
 explicitly disable the default scroll restoration behavior. This is achieved
-by adding a new attribute, `options.scrollRestoration`, to `window.history`.
+by adding a new attribute, `scrollRestoration`, to `window.history`.
 This new attribute can take two values: 'auto', 'manual' with 'auto' being the
 default.
 
@@ -91,12 +91,8 @@ scroll restoration for any other frame including any of its child frames.
 
 enum ScrollRestoration { "auto", "manual" };
 
-interface StateOptions {
-  attribute ScrollRestoration scrollRestoration;
-};
-
 partial interface History {
-  readonly attribute StateOptions options;
+  attribute ScrollRestoration scrollRestoration;
 };
 
 </pre>
@@ -111,11 +107,6 @@ partial interface History {
 </dl>
 
 
-<p class="note"> The `StateOptions` is defined as a interface to make it
-easier to add additional restoration related control knobs in future. For
-example it is possible to give developers control over restoration of scale,
-or form data by adding new attributes to `StateOptions`. </p>
-
 <section class="informative">
 ## Usage
 
@@ -126,14 +117,14 @@ entry is added to history session with unexpected scroll restoration option.
 
   <pre class='highlight example'>
   window.onload = function() {
-       history.options.scrollRestoration = 'manual';
+       history.scrollRestoration = 'manual';
   }
   </pre>
 
-Checking for existence of the history.options can be used as a way to feature detect:
+Checking for existence of the `scrollRestoration` can be used as a way to feature detect:
 
   <pre class='highlight example'>
-    let canControlScrollRestoration = 'options' in window.history && 'scrollRestoration' in window.history.options
+    let canControlScrollRestoration = 'scrollRestoration' in window.history
   </pre>
 
 </section>
@@ -164,7 +155,7 @@ Run the following steps immediately:
   rendering, for instance values of form fields, that it had previously
   recorded.
 
-  5. Set `history.options.scrollRestoration` to *scrollRestoration*
+  5. Set `history.scrollRestoration` to *scrollRestoration*
 
 ### Push State
 
@@ -191,7 +182,7 @@ algorithm] algorithm  and update step 2.2 as following:
 
   (2\.)2\. Append a new entry at the end of the History object representing
 the new resource and its Document object and related state **and with default
-history scroll restoration value (i.e. "auto")**.
+history scroll restoration value i.e. "auto"**.
 
 
 
