@@ -112,13 +112,18 @@ partial interface History {
 
 Web applications that want to implement their own custom scroll restoration
 logic can disable user-agent's scroll restoration by setting the
-scrollRestoration value. It is best if this is done on load to ensure that no
-entry is added to history session with unexpected scroll restoration option.
+scrollRestoration attribute. Most applications want to use the same scroll
+restoration value for all of their history entries in which case they should
+set the scrollRestoration attribute as soon as possible (e.g., first script
+tag in the document's &lt;head&gt;) to ensure that any entry that is added to
+the history session gets the desired scroll restoration value.
 
   <pre class='highlight example'>
-  window.onload = function() {
-       history.scrollRestoration = 'manual';
-  }
+    &lt;head&gt;
+      &lt;script&gt;
+           history.scrollRestoration = 'manual';
+      &lt;/script&gt;
+    &lt;/head&gt;
   </pre>
 
 Checking for existence of the `scrollRestoration` can be used as a way to feature detect:
@@ -150,12 +155,13 @@ Run the following steps immediately:
 
   2. If *scrollRestoration* is 'manual' the user agent should not
   restore the scroll position for the document otherwise it may.
+
+  3. Set `history.scrollRestoration` to *scrollRestoration*
   
-  3. User agent may now update other aspects of the document and its
+  4. User agent may now update other aspects of the document and its
   rendering, for instance values of form fields, that it had previously
   recorded.
 
-  5. Set `history.scrollRestoration` to *scrollRestoration*
 
 ### Push State
 
