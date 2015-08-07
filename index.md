@@ -52,8 +52,8 @@ instant jump, or even restoring scroll position of inner scrollers.
 There several hacks used in practice which suffer from serious issues and force
 developers to make unnecessary compromises. You can find a discussion of these
 workarounds in appendix A. Few examples for developers struggling with these
-issues are documented [here][issue1], [here][issue2], [here][issue3], and
-[here][issue4].
+issues are documented for [Mozilla][issue1], [Facebook][issue2], [React router][issue3], 
+[Google products][issue4], [Mobile SPA][issue5], and [others][issue6].
 
 
 ## Existing Workarounds
@@ -92,9 +92,11 @@ see [here][background].
 [spec]: http://www.w3.org/TR/html51/browsers.html#history
 [whatwg]: https://lists.w3.org/Archives/Public/public-whatwg-archive/2015Mar/0070.html
 [issue1]: https://bugzilla.mozilla.org/show_bug.cgi?id=679458
-[issue2]: https://github.com/rackt/react-router/issues/707
-[issue3]: http://andrz.me/blog/scrollx-scroll-why-history
-[issue4]: https://aerotwist.com/blog/some-gotchas-that-got-me/#body-scrolling-is-impossible-to-stop
+[issue2]: https://bugs.webkit.org/show_bug.cgi?id=51899
+[issue3]: https://github.com/rackt/react-router/issues/707
+[issue4]: https://crbug.com/444094
+[issue5]: http://andrz.me/blog/scrollx-scroll-why-history
+[issue6]: https://aerotwist.com/blog/some-gotchas-that-got-me/#body-scrolling-is-impossible-to-stop
 
 [position-tracking-bug]: https://code.google.com/p/chromium/issues/detail?id=474579
 [chromeflag]: chrome://flags/#enable-experimental-web-platform-features
