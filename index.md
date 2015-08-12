@@ -7,18 +7,12 @@ layout: markdown
 Custom Scroll Restoration Proposal
 ==================================
 
-Proposal to gives web authors additional control over user agent's restoration
-of persisted use state in particular the scroll position and page scale.
+This is a proposal for a [small new API](history-based-api.html)\* that gives
+web authors additional control over user agent's restoration of persisted use
+state in particular the scroll position. ([whatwg discussion][whatwg])
 
-There are two slightly different proposed API that can achieve this:
-
-- [History based API](history-based-api.html): This is the original proposed API
-   which is currently implemented in chromium behind [experimental feature
-   flag][chromeflag]. ([whatwg discussion][whatwg])
-
-- [~~Event based API~~](event-based-api.html): This proposal suffers from serious
-  problem described in [issue 3](https://github.com/majido/scroll-
-  restoration-proposal/issues/3).
+\* This is implemented in chromium and it is [planed][chromestatus]
+for release in version 46.
 
 
 ## Problem Summary
@@ -85,8 +79,20 @@ reliable solution for tracking document scroll position (i.e., record scroll
 position *onpopstate)*.
 
 
-For some more details around background and motivation for this proposal 
-see [here][background].
+## Alternative APIs Considered
+
+1. Use [events][2] to allow detection of scroll restoration and its
+prevention. This [forces the timing of restoration][3] to be after DOMReady on
+cross-document navigation. This is an unacceptable UX.
+2. Use a [fourth additional options on pushState, replaceState][4]. Deemed too
+complex for simple scenarios and [unnecessarily links state creation with
+scroll restoration][5].
+3. Same as #2 but with [two brand new methods][6] (push, replace) that accept
+dictionaries.
+
+For even more minor API variation considered see [this document][background].
+
+
 
 [background]: https://docs.google.com/document/d/1Tiu8PjvBtNOAgeh6yrs7bOrXxQcavQLiNtRJ_ToLlVM/edit
 [spec]: http://www.w3.org/TR/html51/browsers.html#history
@@ -100,3 +106,10 @@ see [here][background].
 
 [position-tracking-bug]: https://code.google.com/p/chromium/issues/detail?id=474579
 [chromeflag]: chrome://flags/#enable-experimental-web-platform-features
+[chromestatus]: https://www.chromestatus.com/feature/5657284784947200
+
+[2]: http://majido.github.io/scroll-restoration-proposal/event-based-api.html
+[3]: https://github.com/majido/scroll-restoration-proposal/issues/3
+[4]: https://lists.w3.org/Archives/Public/public-whatwg-archive/2015Mar/0070.html
+[5]: https://lists.w3.org/Archives/Public/public-whatwg-archive/2015Jul/0052.html
+[6]: https://lists.w3.org/Archives/Public/public-whatwg-archive/2015Mar/0166.html
