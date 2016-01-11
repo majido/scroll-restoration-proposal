@@ -4,6 +4,8 @@ layout: markdown
 ---
 
 
+*NOTE*: The proposed API is now part of [WhatWG HTML Living Standard][whatwg-spec]
+
 Custom Scroll Restoration Proposal
 ==================================
 
@@ -46,7 +48,7 @@ instant jump, or even restoring scroll position of inner scrollers.
 There several hacks used in practice which suffer from serious issues and force
 developers to make unnecessary compromises. You can find a discussion of these
 workarounds in appendix A. Few examples for developers struggling with these
-issues are documented for [Mozilla][issue1], [Facebook][issue2], [React router][issue3], 
+issues are documented for [Mozilla][issue1], [Facebook][issue2], [React router][issue3],
 [Google products][issue4], [Mobile SPA][issue5], and [others][issue6].
 
 
@@ -97,6 +99,7 @@ For even more minor API variation considered see [this document][background].
 [background]: https://docs.google.com/document/d/1Tiu8PjvBtNOAgeh6yrs7bOrXxQcavQLiNtRJ_ToLlVM/edit
 [spec]: http://www.w3.org/TR/html51/browsers.html#history
 [whatwg]: https://lists.w3.org/Archives/Public/public-whatwg-archive/2015Mar/0070.html
+[whatwg-spec]:https://html.spec.whatwg.org/multipage/browsers.html#dom-history-scroll-restoration
 [issue1]: https://bugzilla.mozilla.org/show_bug.cgi?id=679458
 [issue2]: https://bugs.webkit.org/show_bug.cgi?id=51899
 [issue3]: https://github.com/rackt/react-router/issues/707
